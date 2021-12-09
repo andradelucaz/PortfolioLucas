@@ -1,0 +1,21 @@
+---
+title: "Análise da Base RAIS"
+description: |
+  Essa análise tem como objetivo analisar os salários da base RAIs, feita na Semana Data Science na Prática da Curso-R.
+author:
+  - name: Lucas Andrade
+    url: https://www.linkedin.com/in/lucas-silva-andrade-155a27165/
+date: 2021-12-09
+output:
+  distill::distill_article:
+    self_contained: false
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+Esse é o meu primeiro projeto no portfólio.
+
+
