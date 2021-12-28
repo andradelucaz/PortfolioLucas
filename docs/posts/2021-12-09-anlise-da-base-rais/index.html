@@ -118,7 +118,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["anlise-da-base-rais_files/anchor-4.2.2/anchor.min.js","anlise-da-base-rais_files/bowser-1.9.3/bowser.min.js","anlise-da-base-rais_files/distill-2.2.21/template.v2.js","anlise-da-base-rais_files/header-attrs-2.11/header-attrs.js","anlise-da-base-rais_files/jquery-3.6.0/jquery-3.6.0.js","anlise-da-base-rais_files/jquery-3.6.0/jquery-3.6.0.min.js","anlise-da-base-rais_files/jquery-3.6.0/jquery-3.6.0.min.map","anlise-da-base-rais_files/popper-2.6.0/popper.min.js","anlise-da-base-rais_files/tippy-6.2.7/tippy-bundle.umd.min.js","anlise-da-base-rais_files/tippy-6.2.7/tippy-light-border.css","anlise-da-base-rais_files/tippy-6.2.7/tippy.css","anlise-da-base-rais_files/tippy-6.2.7/tippy.umd.min.js","anlise-da-base-rais_files/webcomponents-2.0.0/webcomponents.js"]}
+  {"type":"character","attributes":{},"value":["anlise-da-base-rais_files/anchor-4.2.2/anchor.min.js","anlise-da-base-rais_files/bowser-1.9.3/bowser.min.js","anlise-da-base-rais_files/distill-2.2.21/template.v2.js","anlise-da-base-rais_files/figure-html5/unnamed-chunk-8-1.png","anlise-da-base-rais_files/header-attrs-2.11/header-attrs.js","anlise-da-base-rais_files/jquery-3.6.0/jquery-3.6.0.js","anlise-da-base-rais_files/jquery-3.6.0/jquery-3.6.0.min.js","anlise-da-base-rais_files/jquery-3.6.0/jquery-3.6.0.min.map","anlise-da-base-rais_files/popper-2.6.0/popper.min.js","anlise-da-base-rais_files/tippy-6.2.7/tippy-bundle.umd.min.js","anlise-da-base-rais_files/tippy-6.2.7/tippy-light-border.css","anlise-da-base-rais_files/tippy-6.2.7/tippy.css","anlise-da-base-rais_files/tippy-6.2.7/tippy.umd.min.js","anlise-da-base-rais_files/webcomponents-2.0.0/webcomponents.js"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
 <meta name="distill:offset" content="../.."/>
@@ -2104,14 +2104,13 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="d-article">
 <p>Esse é o meu primeiro projeto no portfólio. O o objetivo desse relatório é responder à seguinte pergunta: Quanto ganha um Cientista de Dados? Para isso vamos utilizar a base da RAIS anonimizada</p>
 <p>#Acessando os dados da RAIS</p>
-<p>Vamos utilizar [o datalake da incrível iniciativa Base dos Dados] (<a href="https://basedosdados.org/" class="uri">https://basedosdados.org/</a>)</p>
+<p>Vamos utilizar <span class="math display">\[o datalake da incrível iniciativa Base dos Dados\]</span> (<a href="https://basedosdados.org/" class="uri">https://basedosdados.org/</a>)</p>
 <div class="layout-chunk" data-layout="l-body">
 
 </div>
 <p>Abaixo está o código que carrega as primeiras 5 linhas que carrega a tabela de microdados</p>
 <div class="layout-chunk" data-layout="l-body">
-<pre><code># Source:   lazy query [?? x 66]
-# Database: BigQueryConnection
+<pre><code># A tibble: 5 x 66
     ano sigla_uf id_municipio tipo_vinculo vinculo_ativo_3112
   &lt;int&gt; &lt;chr&gt;    &lt;chr&gt;        &lt;chr&gt;                     &lt;int&gt;
 1  1985 AC       1200054      1                             1
@@ -2127,7 +2126,78 @@ document.addEventListener('DOMContentLoaded', function() {
 #   faixa_horas_contratadas &lt;chr&gt;,
 #   quantidade_horas_contratadas &lt;int&gt;, ...</code></pre>
 </div>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<p>Para analisar apenas os dados dos vínculos formais relacionados à ciência de dados precisaremos filtrar a base. utilizaremos como filtro os códigos dos vínculos declarados que se relacionam à ciência de dados e são cadastrados no Código Brasileiro de Ocupação. A base RTAIS será então filtrada tomando como critérios códigos das profissõesoes atreladas à ciência de dados. NEsse primeiro momento selecionei apenas as 5000 primeira linhas</p>
+<div class="layout-chunk" data-layout="l-body">
+
+</div>
+<p>Agora vamos rodar a base completa!</p>
+<p>Os dados já carregados servirão para responder à pergunta principal que move essa análise: <strong>“Quanto ganha em média, uma pessoa que trabalha com ciência de dados?</strong></p>
+<p>Segundo os dados registrados na base RAIS, uma pessoa que trabalha com ciência de dados recebe em média:</p>
+<div class="layout-chunk" data-layout="l-body">
+
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<pre><code>[1] 4395.09</code></pre>
+</div>
+<p>Além dessa pergunta principal, podemos ainda nos aprofundarmos na análise e responder ao seguintes questionamentos:</p>
+<ul>
+<li><p>Quanto o valor médio do salário varia em relação ao ano anterior?</p>
+<div class="layout-chunk" data-layout="l-body">
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: right;">ano</th>
+<th style="text-align: right;">media_salarial</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: right;">2013</td>
+<td style="text-align: right;">3457.55</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2014</td>
+<td style="text-align: right;">3702.13</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2015</td>
+<td style="text-align: right;">4229.45</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2016</td>
+<td style="text-align: right;">4409.33</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2017</td>
+<td style="text-align: right;">4969.98</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2018</td>
+<td style="text-align: right;">4886.12</td>
+</tr>
+<tr class="odd">
+<td style="text-align: right;">2019</td>
+<td style="text-align: right;">4969.41</td>
+</tr>
+<tr class="even">
+<td style="text-align: right;">2020</td>
+<td style="text-align: right;">4823.55</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="anlise-da-base-rais_files/figure-html5/unnamed-chunk-8-1.png" width="624" /></p>
+</div></li>
+<li><p>Quanto o valor médio varia conforme a região?</p></li>
+<li><p>Quanto o valor médio varia em função dos seguintes componentes:</p>
+<ul>
+<li><p>Gênero -</p></li>
+<li><p>Raça/cor</p></li>
+<li><p>Idade</p></li>
+</ul></li>
+</ul>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>
@@ -2135,6 +2205,15 @@ document.addEventListener('DOMContentLoaded', function() {
 <div class="d-appendix">
 </div>
 
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
 
 <!--radix_placeholder_site_after_body-->
 <!--/radix_placeholder_site_after_body-->

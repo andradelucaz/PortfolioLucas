@@ -15,19 +15,17 @@ output:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-Esse é o meu primeiro projeto no portfólio. O o objetivo desse relatório é responder à seguinte pergunta:
-    Quanto ganha um Cientista de Dados?
-Para isso vamos utilizar a base da RAIS anonimizada
+Esse é o meu primeiro projeto no portfólio. O o objetivo desse relatório é responder à seguinte pergunta: Quanto ganha um Cientista de Dados? Para isso vamos utilizar a base da RAIS anonimizada
 
 #Acessando os dados da RAIS
 
-Vamos utilizar [o datalake da incrível iniciativa Base dos Dados] (https://basedosdados.org/)
+Vamos utilizar o datalake da incrível iniciativa Base dos Dados (<https://basedosdados.org/>)
 
 ```{r message=FALSE, warning=FALSE}
 library(bigrquery)
 library(dplyr)
+library(tidyverse)
 ```
-
 
 Abaixo está o código que carrega as primeiras 5 linhas que carrega a tabela de microdados
 
@@ -39,7 +37,7 @@ conexao <- dbConnect(
   billing = 'analise-rais-portfolio'
 )
 
-bd_cinco %>% tbl(conexao, "microdados_vinculo") %>%
+bd_cinco <- tbl(conexao, "microdados_vinculos") %>%
   select (everything()) %>%
   head(5) %>%
   collect()
@@ -48,7 +46,7 @@ bd_cinco
 
 ```
 
-Para analisar apenas os dados dos vínculos formais relacionados à ciência de dados precisaremos filtrar a base. utilizaremos como filtro os códigos dos vínculos declarados que se relacionam à ciência de dados e são cadastrados no Código Brasileiro de Ocupação. A base RTAIS será então filtrada tomando como critérios códigos das profissõesoes atreladas à ciência de dados. NEsse primeiro momento selecionei apenas as 5000 primeira linhas
+Para analisar apenas os dados dos vínculos formais relacionados à ciência de dados precisaremos filtrar a base. utilizaremos como filtro os códigos dos vínculos declarados que se relacionam à ciência de dados e são cadastrados no Código Brasileiro de Ocupação. A base RAIS será então filtrada tomando como critérios códigos das profissõesoes atreladas à ciência de dados. NEsse primeiro momento selecionei apenas as 5000 primeira linhas
 
 ```{r}
 codigos_cbo <- c ('252515', "252525", "211110", 
@@ -58,7 +56,7 @@ codigos_cbo <- c ('252515', "252525", "211110",
                   #ocupações estatísticas
 )
 
-tabela_micrdodados_vinculos_tbl <- tbl(conexao, "microdados_vinculos") %>% 
+micrdodados_vinculos_tbl <- tbl(conexao, "microdados_vinculos") %>% 
   select (everything()) %>% 
   filter(
     ano >= 2013,
@@ -66,14 +64,13 @@ tabela_micrdodados_vinculos_tbl <- tbl(conexao, "microdados_vinculos") %>%
     ) %>% 
   head(5000)
 
-tabela_micrdodados_vinculos_tbl
-tabela_micrdodados_vinculos <- collect(tabela_micrdodados_vinculos_tbl)
+
+tabela_micrdodados_vinculos <- collect(micrdodados_vinculos_tbl)
 ```
 
-    
 Agora vamos rodar a base completa!
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 
 tabela_micrdodados_vinculos_tbl <- tbl(conexao, "microdados_vinculos") %>% 
   select (everything()) %>% 
@@ -83,8 +80,54 @@ tabela_micrdodados_vinculos_tbl <- tbl(conexao, "microdados_vinculos") %>%
     )
 
 tabela_micrdodados_vinculos_tbl
-tabela_micrdodados_vinculos <- collect(tabela_micrdodados_vinculos_tbl)
-as.tibble(tabela_micrdodados_vinculos)
+tabela_microdados_vinculos <- collect(tabela_micrdodados_vinculos_tbl)
+
+saveRDS(tabela_microdados_vinculos, "tabela_microdados_vinculos.rds" )
 ```
+
+Os dados já carregados servirão para responder à pergunta principal que move essa análise: **"Quanto ganha em média, uma pessoa que trabalha com ciência de dados?**
+
+Segundo os dados registrados na base RAIS, uma pessoa que trabalha com ciência de dados recebe em média:
+
+```{r, echo=FALSE}
+
+tabela_microdados_vinculos <- readRDS("tabela_microdados_vinculos.rds")
+
+sal_media <- round(mean(tabela_microdados_vinculos$valor_remuneracao_media), 2)
+```
+
+```{r}
+sal_media
+```
+
+Além dessa pergunta principal, podemos ainda nos aprofundarmos na análise e responder ao seguintes questionamentos:
+
+-   Quanto o valor médio do salário varia em relação ao ano anterior?
+
+    ```{r}
+    tabela_medias <- tabela_microdados_vinculos %>% 
+  group_by(ano) %>% 
+  summarise(media_salarial = round(mean(valor_remuneracao_media),2))
+    
+    knitr::kable(tabela_medias)
+    ```
+
+
+    ```{r}
+    ggplot(tabela_medias) +
+    geom_col(aes(x = ano, y = media_salarial, fill = ano), show.legend = FALSE) +
+    geom_text(aes(x = ano, y = media_salarial*0.85, label = media_salarial, fontface = 'bold')) +
+    scale_x_continuous(breaks = c(2013:2019))
+    ```
+
+-   Quanto o valor médio varia conforme a região?
+
+-   Quanto o valor médio varia em função dos seguintes componentes:
+
+    -   Gênero -
+
+    -   Raça/cor
+
+    -   Idade
 
 
