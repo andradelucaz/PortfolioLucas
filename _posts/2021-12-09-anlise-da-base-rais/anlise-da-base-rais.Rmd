@@ -1,7 +1,7 @@
 ---
 title: "Análise da Base RAIS"
 description: |
-  Essa análise tem como objetivo analisar os salários da base RAIs, feita na Semana Data Science na Prática da Curso-R.
+  Essa é uma análise de salários da base RAIS, feita na Semana Data Science na Prática da Curso-R.[EM CONSTRUÇÃO...]
 author:
   - name: Lucas Andrade
     url: https://www.linkedin.com/in/lucas-silva-andrade-155a27165/
@@ -11,11 +11,80 @@ output:
     self_contained: false
 ---
 
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-Esse é o meu primeiro projeto no portfólio.
+Esse é o meu primeiro projeto no portfólio. O o objetivo desse relatório é responder à seguinte pergunta:
+    Quanto ganha um Cientista de Dados?
+Para isso vamos utilizar a base da RAIS anonimizada
+
+#Acessando os dados da RAIS
+
+Vamos utilizar [o datalake da incrível iniciativa Base dos Dados] (https://basedosdados.org/)
+
+```{r message=FALSE, warning=FALSE}
+library(bigrquery)
+library(dplyr)
+```
+
+
+Abaixo está o código que carrega as primeiras 5 linhas que carrega a tabela de microdados
+
+```{r message=FALSE, warning=FALSE}
+conexao <- dbConnect(
+  bigquery(),
+  project = 'basedosdados',
+  dataset = 'br_me_rais',
+  billing = 'analise-rais-portfolio'
+)
+
+bd_cinco %>% tbl(conexao, "microdados_vinculo") %>%
+  select (everything()) %>%
+  head(5) %>%
+  collect()
+ 
+bd_cinco 
+
+```
+
+Para analisar apenas os dados dos vínculos formais relacionados à ciência de dados precisaremos filtrar a base. utilizaremos como filtro os códigos dos vínculos declarados que se relacionam à ciência de dados e são cadastrados no Código Brasileiro de Ocupação. A base RTAIS será então filtrada tomando como critérios códigos das profissõesoes atreladas à ciência de dados. NEsse primeiro momento selecionei apenas as 5000 primeira linhas
+
+```{r}
+codigos_cbo <- c ('252515', "252525", "211110", 
+                  #pesquisa científica
+                  '211205', '211210', '411035',
+                  '131120', '211215' 
+                  #ocupações estatísticas
+)
+
+tabela_micrdodados_vinculos_tbl <- tbl(conexao, "microdados_vinculos") %>% 
+  select (everything()) %>% 
+  filter(
+    ano >= 2013,
+    cbo_2002 %in% codigos_cbo
+    ) %>% 
+  head(5000)
+
+tabela_micrdodados_vinculos_tbl
+tabela_micrdodados_vinculos <- collect(tabela_micrdodados_vinculos_tbl)
+```
+
+    
+Agora vamos rodar a base completa!
+
+```{r}
+
+tabela_micrdodados_vinculos_tbl <- tbl(conexao, "microdados_vinculos") %>% 
+  select (everything()) %>% 
+  filter(
+    ano >= 2013,
+    cbo_2002 %in% codigos_cbo
+    )
+
+tabela_micrdodados_vinculos_tbl
+tabela_micrdodados_vinculos <- collect(tabela_micrdodados_vinculos_tbl)
+as.tibble(tabela_micrdodados_vinculos)
+```
 
 
