@@ -120,7 +120,9 @@ Além dessa pergunta principal, podemos ainda nos aprofundarmos na análise e re
     ```{r}
     ggplot(media_ano) +
     geom_col(aes(x = ano, y = media_salarial, fill = ano), show.legend = FALSE) +
-    geom_text(aes(x = ano, y = media_salarial*0.85, label = media_salarial, fontface = 'bold')) +
+    geom_text(aes(x = ano, y = media_salarial*0.85, label = media_salarial, fontface = 'bold'))+
+    labs(x = "\nAno\n", y = "\nSalário médio (R$)\n", title = "Salário médio de um cientista de dados por ano")+
+    theme_minimal()+
     scale_x_continuous(breaks = c(2013:2019))
     ```
 
@@ -140,7 +142,7 @@ media_uf <- tabela_microdados_vinculos %>%
 knitr::kable(head(media_uf))
 
 ```
-```{r fig.width = 11, fig.height = 11}
+```{r fig.width = 10, fig.height = 10, fig.align='center'}
 
 media_uf %>% 
   mutate(sigla_uf = fct_reorder(sigla_uf, media)) %>% 
@@ -167,7 +169,7 @@ media_genero <- tabela_microdados_vinculos %>%
 
 ```
     
-```{r}
+```{r fig.width=6, fig.height=5, fig.align='center'}
 
 media_genero %>%
   ggplot()+
@@ -200,7 +202,7 @@ media_raca <- tabela_microdados_vinculos %>%
 knitr::kable(media_raca)
 ```
 
-```{r}
+```{r fig.width=7, fig.height=4, fig.align='center'}
 media_raca %>% 
   mutate(raca_cor = fct_reorder(raca_cor, media)) %>% 
   arrange(raca_cor, desc = FALSE) %>% 
@@ -213,5 +215,42 @@ media_raca %>%
 ```
 
     -   Idade
+```{r}
+media_idade <- tabela_microdados_vinculos %>% 
+  mutate(faixa_etaria = case_when(
+                            faixa_etaria == 1 ~ "10 a 14",
+                            faixa_etaria == 2 ~ "15 a 17",
+                            faixa_etaria == 3 ~ "18 a 24",
+                            faixa_etaria == 4 ~ "25 a 29",
+                            faixa_etaria == 5 ~ "30 a 39",
+                            faixa_etaria == 6 ~ "40 a 49",
+                            faixa_etaria == 7 ~ "50 a 64",
+                            faixa_etaria == 8 ~ "65 ou mais",
+                          )) %>%
+  group_by(faixa_etaria) %>% 
+  summarise(media = round(mean(valor_remuneracao_media), 2), mediana = round(median(valor_remuneracao_media),2))
 
+knitr::kable(media_idade)
+
+```
+
+
+```{r fig.width=11, fig.height=8, fig.align='center'}
+
+tabela_microdados_vinculos %>% 
+  mutate(faixa_etaria = case_when(
+                            faixa_etaria == 1 ~ "10 a 14 anos",
+                            faixa_etaria == 2 ~ "15 a 17 anos",
+                            faixa_etaria == 3 ~ "18 a 24 anos",
+                            faixa_etaria == 4 ~ "25 a 29 anos",
+                            faixa_etaria == 5 ~ "30 a 39 anos",
+                            faixa_etaria == 6 ~ "40 a 49 anos",
+                            faixa_etaria == 7 ~ "50 a 64 anos",
+                            faixa_etaria == 8 ~ "65 anos ou mais")) %>% 
+  ggplot(aes(x=idade, y = valor_remuneracao_media)) +
+  geom_point(aes(color = faixa_etaria)) +
+  labs( x = "\nIdade (anos)\n", y = "\nSalário médio R$\n", title =  "Salário médio de um cientista de dados por idade", colour = "Faixa etária")
+
+
+```
 
