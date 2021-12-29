@@ -117,7 +117,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
   <!--/radix_placeholder_rmarkdown_metadata-->
   
   <script type="text/json" id="radix-resource-manifest">
-  {"type":"character","attributes":{},"value":["anlise-da-base-rais_files/anchor-4.2.2/anchor.min.js","anlise-da-base-rais_files/bowser-1.9.3/bowser.min.js","anlise-da-base-rais_files/distill-2.2.21/template.v2.js","anlise-da-base-rais_files/figure-html5/unnamed-chunk-8-1.png","anlise-da-base-rais_files/header-attrs-2.11/header-attrs.js","anlise-da-base-rais_files/jquery-3.6.0/jquery-3.6.0.js","anlise-da-base-rais_files/jquery-3.6.0/jquery-3.6.0.min.js","anlise-da-base-rais_files/jquery-3.6.0/jquery-3.6.0.min.map","anlise-da-base-rais_files/popper-2.6.0/popper.min.js","anlise-da-base-rais_files/tippy-6.2.7/tippy-bundle.umd.min.js","anlise-da-base-rais_files/tippy-6.2.7/tippy-light-border.css","anlise-da-base-rais_files/tippy-6.2.7/tippy.css","anlise-da-base-rais_files/tippy-6.2.7/tippy.umd.min.js","anlise-da-base-rais_files/webcomponents-2.0.0/webcomponents.js"]}
+  {"type":"character","attributes":{},"value":["anlise-da-base-rais_files/anchor-4.2.2/anchor.min.js","anlise-da-base-rais_files/bowser-1.9.3/bowser.min.js","anlise-da-base-rais_files/distill-2.2.21/template.v2.js","anlise-da-base-rais_files/figure-html5/unnamed-chunk-12-1.png","anlise-da-base-rais_files/figure-html5/unnamed-chunk-14-1.png","anlise-da-base-rais_files/figure-html5/unnamed-chunk-8-1.png","anlise-da-base-rais_files/figure-html5/unnamed-chunk-9-1.png","anlise-da-base-rais_files/header-attrs-2.11/header-attrs.js","anlise-da-base-rais_files/jquery-3.6.0/jquery-3.6.0.js","anlise-da-base-rais_files/jquery-3.6.0/jquery-3.6.0.min.js","anlise-da-base-rais_files/jquery-3.6.0/jquery-3.6.0.min.map","anlise-da-base-rais_files/popper-2.6.0/popper.min.js","anlise-da-base-rais_files/tippy-6.2.7/tippy-bundle.umd.min.js","anlise-da-base-rais_files/tippy-6.2.7/tippy-light-border.css","anlise-da-base-rais_files/tippy-6.2.7/tippy.css","anlise-da-base-rais_files/tippy-6.2.7/tippy.umd.min.js","anlise-da-base-rais_files/webcomponents-2.0.0/webcomponents.js"]}
   </script>
   <!--radix_placeholder_navigation_in_header-->
   <!--/radix_placeholder_navigation_in_header-->
@@ -1489,27 +1489,7 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 
 </div>
 <p>Abaixo está o código que carrega as primeiras 5 linhas que carrega a tabela de microdados</p>
-<div class="layout-chunk" data-layout="l-body">
-<pre><code># A tibble: 5 x 66
-    ano sigla_uf id_municipio tipo_vinculo vinculo_ativo_3112
-  &lt;int&gt; &lt;chr&gt;    &lt;chr&gt;        &lt;chr&gt;                     &lt;int&gt;
-1  1985 AC       1200054      1                             1
-2  1985 AC       1200054      1                             1
-3  1985 AC       1200054      1                             1
-4  1985 AC       1200054      1                             1
-5  1985 AC       1200054      1                             1
-# ... with 61 more variables: tipo_admissao &lt;chr&gt;,
-#   mes_admissao &lt;int&gt;, mes_desligamento &lt;int&gt;,
-#   motivo_desligamento &lt;chr&gt;, causa_desligamento_1 &lt;chr&gt;,
-#   causa_desligamento_2 &lt;chr&gt;, causa_desligamento_3 &lt;chr&gt;,
-#   faixa_tempo_emprego &lt;chr&gt;, tempo_emprego &lt;dbl&gt;,
-#   faixa_horas_contratadas &lt;chr&gt;,
-#   quantidade_horas_contratadas &lt;int&gt;, ...</code></pre>
-</div>
 <p>Para analisar apenas os dados dos vínculos formais relacionados à ciência de dados precisaremos filtrar a base. utilizaremos como filtro os códigos dos vínculos declarados que se relacionam à ciência de dados e são cadastrados no Código Brasileiro de Ocupação. A base RAIS será então filtrada tomando como critérios códigos das profissõesoes atreladas à ciência de dados. NEsse primeiro momento selecionei apenas as 5000 primeira linhas</p>
-<div class="layout-chunk" data-layout="l-body">
-
-</div>
 <p>Agora vamos rodar a base completa!</p>
 <p>Os dados já carregados servirão para responder à pergunta principal que move essa análise: <strong>“Quanto ganha em média, uma pessoa que trabalha com ciência de dados?</strong></p>
 <p>Segundo os dados registrados na base RAIS, uma pessoa que trabalha com ciência de dados recebe em média:</p>
@@ -1567,17 +1547,67 @@ code span.wa { color: #5e5e5e; font-style: italic; } /* Warning */
 </table>
 </div>
 <div class="layout-chunk" data-layout="l-body">
-<p><img src="anlise-da-base-rais_files/figure-html5/unnamed-chunk-8-1.png" width="624" /></p>
+<p><img src="anlise-da-base-rais_files/figure-html5/unnamed-chunk-9-1.png" width="624" /></p>
 </div></li>
 <li><p>Quanto o valor médio varia conforme a região?</p></li>
+</ul>
+<div class="layout-chunk" data-layout="l-body">
+<table>
+<thead>
+<tr class="header">
+<th style="text-align: left;">sigla_uf</th>
+<th style="text-align: right;">media</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">RJ</td>
+<td style="text-align: right;">7354.05</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">DF</td>
+<td style="text-align: right;">6418.66</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">SP</td>
+<td style="text-align: right;">5081.14</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">PA</td>
+<td style="text-align: right;">4281.31</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">PE</td>
+<td style="text-align: right;">4093.02</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">AM</td>
+<td style="text-align: right;">3969.42</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="anlise-da-base-rais_files/figure-html5/unnamed-chunk-12-1.png" width="1056" /></p>
+</div>
+<ul>
 <li><p>Quanto o valor médio varia em função dos seguintes componentes:</p>
 <ul>
-<li><p>Gênero -</p></li>
-<li><p>Raça/cor</p></li>
-<li><p>Idade</p></li>
+<li>Gênero</li>
 </ul></li>
 </ul>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
+<div class="layout-chunk" data-layout="l-body">
+
+</div>
+<div class="layout-chunk" data-layout="l-body">
+<p><img src="anlise-da-base-rais_files/figure-html5/unnamed-chunk-14-1.png" width="624" /></p>
+</div>
+<pre><code>-   Raça/cor</code></pre>
+<div class="layout-chunk" data-layout="l-body">
+
+</div>
+<pre><code>-   Idade</code></pre>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r distill-force-highlighting-css"><code class="sourceCode r"></code></pre></div>
 <!--radix_placeholder_article_footer-->
 <!--/radix_placeholder_article_footer-->
 </div>

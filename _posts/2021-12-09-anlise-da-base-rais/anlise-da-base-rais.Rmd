@@ -29,13 +29,17 @@ library(tidyverse)
 
 Abaixo está o código que carrega as primeiras 5 linhas que carrega a tabela de microdados
 
-```{r message=FALSE, warning=FALSE}
+```{r eval=FALSE, include=FALSE}
 conexao <- dbConnect(
   bigquery(),
   project = 'basedosdados',
   dataset = 'br_me_rais',
   billing = 'analise-rais-portfolio'
 )
+```
+
+
+```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
 
 bd_cinco <- tbl(conexao, "microdados_vinculos") %>%
   select (everything()) %>%
@@ -48,7 +52,7 @@ bd_cinco
 
 Para analisar apenas os dados dos vínculos formais relacionados à ciência de dados precisaremos filtrar a base. utilizaremos como filtro os códigos dos vínculos declarados que se relacionam à ciência de dados e são cadastrados no Código Brasileiro de Ocupação. A base RAIS será então filtrada tomando como critérios códigos das profissõesoes atreladas à ciência de dados. NEsse primeiro momento selecionei apenas as 5000 primeira linhas
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 codigos_cbo <- c ('252515', "252525", "211110", 
                   #pesquisa científica
                   '211205', '211210', '411035',
@@ -105,16 +109,16 @@ Além dessa pergunta principal, podemos ainda nos aprofundarmos na análise e re
 -   Quanto o valor médio do salário varia em relação ao ano anterior?
 
     ```{r}
-    tabela_medias <- tabela_microdados_vinculos %>% 
+    media_ano <- tabela_microdados_vinculos %>% 
   group_by(ano) %>% 
   summarise(media_salarial = round(mean(valor_remuneracao_media),2))
     
-    knitr::kable(tabela_medias)
+    knitr::kable(media_ano)
     ```
 
 
     ```{r}
-    ggplot(tabela_medias) +
+    ggplot(media_ano) +
     geom_col(aes(x = ano, y = media_salarial, fill = ano), show.legend = FALSE) +
     geom_text(aes(x = ano, y = media_salarial*0.85, label = media_salarial, fontface = 'bold')) +
     scale_x_continuous(breaks = c(2013:2019))
@@ -122,11 +126,64 @@ Além dessa pergunta principal, podemos ainda nos aprofundarmos na análise e re
 
 -   Quanto o valor médio varia conforme a região?
 
+
+```{r include=FALSE}
+
+media_uf <- tabela_microdados_vinculos %>% 
+  group_by(sigla_uf) %>% 
+  summarise(media = round(mean(valor_remuneracao_media), 2)) %>% 
+  arrange(desc(media))
+
+```
+
+```{r}
+knitr::kable(head(media_uf))
+
+```
+```{r fig.width = 11, fig.height = 11}
+
+media_uf %>% 
+  mutate(sigla_uf = fct_reorder(sigla_uf, media)) %>% 
+  arrange(desc(sigla_uf)) %>% 
+  ggplot() +
+  geom_col(aes(x = media, y = sigla_uf, fill = sigla_uf), show.legend = FALSE) +
+  labs(x = "\nSalário médio (R$)\n", y = "\nUnidade da Federação\n", title = "Salário médio de um cientista de dados por estado")
+```
+ 
+
 -   Quanto o valor médio varia em função dos seguintes componentes:
 
-    -   Gênero -
+    -   Gênero
+    
+```{r}
+
+media_genero <- tabela_microdados_vinculos %>% 
+  group_by(sexo) %>% 
+  summarise(media = round(mean(valor_remuneracao_media),2))
+
+
+```
+    
+```{r}
+
+media_genero %>%
+  mutate(sexo = ifelse(sexo == 1, "Masculino", "Feminino")) %>% 
+  ggplot()+
+  geom_col(aes(x = sexo, y = media, fill = sexo), show.legend = FALSE) +
+  geom_text(aes(x = sexo, y = media*0.85, fontface = 'bold', label = media)) +
+  labs(x = "\nGênero", y = "\nSalário Médio(R$)\n", title = "Salário médio de um cientista de dados por gênero")
+  
+
+```
+
 
     -   Raça/cor
+
+```{r}
+
+
+```
+
 
     -   Idade
 
