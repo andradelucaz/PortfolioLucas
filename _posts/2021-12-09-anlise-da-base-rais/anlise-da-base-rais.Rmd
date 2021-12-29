@@ -147,6 +147,8 @@ media_uf %>%
   arrange(desc(sigla_uf)) %>% 
   ggplot() +
   geom_col(aes(x = media, y = sigla_uf, fill = sigla_uf), show.legend = FALSE) +
+  geom_text(aes(x = (media*0.8), y = sigla_uf, label = media)) +
+  theme_minimal()+
   labs(x = "\nSalário médio (R$)\n", y = "\nUnidade da Federação\n", title = "Salário médio de um cientista de dados por estado")
 ```
  
@@ -157,7 +159,8 @@ media_uf %>%
     
 ```{r}
 
-media_genero <- tabela_microdados_vinculos %>% 
+media_genero <- tabela_microdados_vinculos %>%
+  mutate(sexo = ifelse(sexo == 1, "Masculino", "Feminino")) %>% 
   group_by(sexo) %>% 
   summarise(media = round(mean(valor_remuneracao_media),2))
 
@@ -167,10 +170,10 @@ media_genero <- tabela_microdados_vinculos %>%
 ```{r}
 
 media_genero %>%
-  mutate(sexo = ifelse(sexo == 1, "Masculino", "Feminino")) %>% 
   ggplot()+
   geom_col(aes(x = sexo, y = media, fill = sexo), show.legend = FALSE) +
   geom_text(aes(x = sexo, y = media*0.85, fontface = 'bold', label = media)) +
+  theme_minimal()+
   labs(x = "\nGênero", y = "\nSalário Médio(R$)\n", title = "Salário médio de um cientista de dados por gênero")
   
 
@@ -180,10 +183,34 @@ media_genero %>%
     -   Raça/cor
 
 ```{r}
+media_raca <- tabela_microdados_vinculos %>% 
+   mutate(raca_cor= case_when(
+                              raca_cor == 1 ~ "Indígena",
+                              raca_cor == 2 ~ "Branca",
+                              raca_cor == 4 ~ "Preta",
+                              raca_cor == 6 ~ "Amarela",
+                              raca_cor == 8 ~ "Parda",
+                              raca_cor == 9 ~ "Não identificado",
+                              raca_cor == -1 ~ "Ignorado"
+                              )) %>% 
+  mutate(sexo = ifelse(sexo == 1, "Masculino", "Feminino")) %>% 
+  group_by(raca_cor) %>% 
+  summarise(media = round(mean(valor_remuneracao_media), 2))
 
-
+knitr::kable(media_raca)
 ```
 
+```{r}
+media_raca %>% 
+  mutate(raca_cor = fct_reorder(raca_cor, media)) %>% 
+  arrange(raca_cor, desc = FALSE) %>% 
+  ggplot()+
+  geom_col(aes( y = raca_cor, x = media, fill = raca_cor), show.legend = FALSE)+
+  geom_text(aes(x = media*0.8, y = raca_cor, label = media))+
+  theme_minimal()+
+  labs(y = "\nRaça/Cor", x = "\nSalário médio (R$)", title = "Salário médio de um cientista de dados por Raça/Cor")
+
+```
 
     -   Idade
 
