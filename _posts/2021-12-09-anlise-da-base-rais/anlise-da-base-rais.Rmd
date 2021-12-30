@@ -1,7 +1,7 @@
 ---
-title: "Análise da Base RAIS"
+title: "O mercado de trabalho para cientistas de dados - Análise Exploratória"
 description: |
-  Essa é uma análise de salários da base RAIS, feita na Semana Data Science na Prática da Curso-R.[EM CONSTRUÇÃO...]
+  Essa é uma análise exploratória a respeito de algumas características do mercado de Ciência de Dado. [EM CONSTRUÇÃO]
 author:
   - name: Lucas Andrade
     url: https://www.linkedin.com/in/lucas-silva-andrade-155a27165/
@@ -15,21 +15,26 @@ output:
 knitr::opts_chunk$set(echo = FALSE)
 ```
 
-Esse é o meu primeiro projeto no portfólio. O o objetivo desse relatório é responder à seguinte pergunta: Quanto ganha um Cientista de Dados? Para isso vamos utilizar a base da RAIS anonimizada
+Esse é o meu primeiro projeto no portfólio.
+
+Uma olhada rápida nas vagas de emprego divulgadas no LinkedIn e encontraremos um enorme volume de oportunidades na área Tech, dentre elas para as posições de Cientista de Dados. Com um mercado apontado para a alta demanda por profissionais da ciência de dados, será possível identificar o atual cenário de remuneração desses profissionais? Quem são esses profissionais? Como se comporta a remuneração de um cientista de dados em função de suas características? Onde estão os maiores salários? Para tentar responder a todos esses questionamentos, faremos aqui uma análise exploratória da base de dados da RAIS anonimizada.
+
+A RAIS ou Relação Anual de informações Sociais, é um relatório de informações socioeconômicas solicitado pela Secretaria de trabalho do Ministério da Economia brasileiro Pàs pessoas jurídicas e outros empregadores anualmente.
 
 #Acessando os dados da RAIS
 
-Vamos utilizar o datalake da incrível iniciativa Base dos Dados (<https://basedosdados.org/>)
+Para essa análise vamos utilizar o datalake da incrível iniciativa **Base dos Dados** (<https://basedosdados.org/>), utilizaremos ainda os pacotes bigrquery e tidyverse
 
-```{r message=FALSE, warning=FALSE}
+#carregando os pacotes
+
+```{r echo=TRUE, message=FALSE, warning=FALSE}
 library(bigrquery)
-library(dplyr)
 library(tidyverse)
 ```
 
-Abaixo está o código que carrega as primeiras 5 linhas que carrega a tabela de microdados
+#realizando a conexão com o Data Lake
 
-```{r eval=FALSE, include=FALSE}
+```{r echo=TRUE}
 conexao <- dbConnect(
   bigquery(),
   project = 'basedosdados',
@@ -38,41 +43,32 @@ conexao <- dbConnect(
 )
 ```
 
+#conhecendo a base e carregando as 5 primeiras linhas da tabela
 
-```{r eval=FALSE, message=FALSE, warning=FALSE, include=FALSE}
+```{r echo=TRUE, message=FALSE, warning=FALSE}
 
-bd_cinco <- tbl(conexao, "microdados_vinculos") %>%
+tbl(conexao, "microdados_vinculos") %>%
   select (everything()) %>%
   head(5) %>%
   collect()
- 
-bd_cinco 
 
 ```
 
-Para analisar apenas os dados dos vínculos formais relacionados à ciência de dados precisaremos filtrar a base. utilizaremos como filtro os códigos dos vínculos declarados que se relacionam à ciência de dados e são cadastrados no Código Brasileiro de Ocupação. A base RAIS será então filtrada tomando como critérios códigos das profissõesoes atreladas à ciência de dados. NEsse primeiro momento selecionei apenas as 5000 primeira linhas
+Para analisar apenas os dados relacionados à ciência de dados entre 18 e 80 anos, precisaremos filtrar a base. Utilizaremos como filtro os códigos dos vínculos declarados que se relacionam à ciência de dados e são cadastrados no Código Brasileiro de Ocupação. A base RAIS será então filtrada tomando como critérios os ódigos das profissões atreladas à ciência de dados.
 
-```{r eval=FALSE, include=FALSE}
+```{r eval=FALSE, include= TRUE}
 codigos_cbo <- c ('252515', "252525", "211110", 
                   #pesquisa científica
+                  '203105',
+                  #pesquisador em ciêcnia da computação e informática
                   '211205', '211210', '411035',
                   '131120', '211215' 
                   #ocupações estatísticas
 )
 
-micrdodados_vinculos_tbl <- tbl(conexao, "microdados_vinculos") %>% 
-  select (everything()) %>% 
-  filter(
-    ano >= 2013,
-    cbo_2002 %in% codigos_cbo
-    ) %>% 
-  head(5000)
-
-
-tabela_micrdodados_vinculos <- collect(micrdodados_vinculos_tbl)
 ```
 
-Agora vamos rodar a base completa!
+#carregando a base filtrada pelos CBOs de Cientistas de Dados com idade entre 18 e 80 anos
 
 ```{r eval=FALSE, include=FALSE}
 
@@ -80,10 +76,10 @@ tabela_micrdodados_vinculos_tbl <- tbl(conexao, "microdados_vinculos") %>%
   select (everything()) %>% 
   filter(
     ano >= 2013,
-    cbo_2002 %in% codigos_cbo
+    cbo_2002 %in% codigos_cbo,
+    filter %in% c(18:80)
     )
 
-tabela_micrdodados_vinculos_tbl
 tabela_microdados_vinculos <- collect(tabela_micrdodados_vinculos_tbl)
 
 saveRDS(tabela_microdados_vinculos, "tabela_microdados_vinculos.rds" )
@@ -93,29 +89,25 @@ Os dados já carregados servirão para responder à pergunta principal que move 
 
 Segundo os dados registrados na base RAIS, uma pessoa que trabalha com ciência de dados recebe em média:
 
-```{r, echo=FALSE}
+```{r echo=TRUE}
 
 tabela_microdados_vinculos <- readRDS("tabela_microdados_vinculos.rds")
 
-sal_media <- round(mean(tabela_microdados_vinculos$valor_remuneracao_media), 2)
-```
+round(mean(tabela_microdados_vinculos$valor_remuneracao_media),2)
 
-```{r}
-sal_media
 ```
 
 Além dessa pergunta principal, podemos ainda nos aprofundarmos na análise e responder ao seguintes questionamentos:
 
--   Quanto o valor médio do salário varia em relação ao ano anterior?
+-   **Como se comportou o salário médio de uma pessoa cientista de dados ao longo dos últimos anos?**
 
-    ```{r}
+    ```{r fig.align='center'}
     media_ano <- tabela_microdados_vinculos %>% 
-  group_by(ano) %>% 
-  summarise(media_salarial = round(mean(valor_remuneracao_media),2))
-    
+      group_by(ano) %>% 
+      summarise(media_salarial = round(mean(valor_remuneracao_media),2))
+
     knitr::kable(media_ano)
     ```
-
 
     ```{r}
     ggplot(media_ano) +
@@ -126,10 +118,9 @@ Além dessa pergunta principal, podemos ainda nos aprofundarmos na análise e re
     scale_x_continuous(breaks = c(2013:2019))
     ```
 
--   Quanto o valor médio varia conforme a região?
+-   **Qual estado do Brasil tem o maior salário médio?**
 
-
-```{r include=FALSE}
+```{r include=FALSE, fig.align='center'}
 
 media_uf <- tabela_microdados_vinculos %>% 
   group_by(sigla_uf) %>% 
@@ -142,6 +133,7 @@ media_uf <- tabela_microdados_vinculos %>%
 knitr::kable(head(media_uf))
 
 ```
+
 ```{r fig.width = 10, fig.height = 10, fig.align='center'}
 
 media_uf %>% 
@@ -153,12 +145,11 @@ media_uf %>%
   theme_minimal()+
   labs(x = "\nSalário médio (R$)\n", y = "\nUnidade da Federação\n", title = "Salário médio de um cientista de dados por estado")
 ```
- 
 
--   Quanto o valor médio varia em função dos seguintes componentes:
+-   **Como se comporta o salário médio de uma pessoa cientista de dados em função das seguintes características:**
 
     -   Gênero
-    
+
 ```{r}
 
 media_genero <- tabela_microdados_vinculos %>%
@@ -168,7 +159,7 @@ media_genero <- tabela_microdados_vinculos %>%
 
 
 ```
-    
+
 ```{r fig.width=6, fig.height=5, fig.align='center'}
 
 media_genero %>%
@@ -181,8 +172,11 @@ media_genero %>%
 
 ```
 
+-   <div>
 
-    -   Raça/cor
+    Raça/cor
+
+    </div>
 
 ```{r}
 media_raca <- tabela_microdados_vinculos %>% 
@@ -214,7 +208,12 @@ media_raca %>%
 
 ```
 
-    -   Idade
+-   <div>
+
+    Idade
+
+    </div>
+
 ```{r}
 media_idade <- tabela_microdados_vinculos %>% 
   mutate(faixa_etaria = case_when(
@@ -234,23 +233,13 @@ knitr::kable(media_idade)
 
 ```
 
-
 ```{r fig.width=11, fig.height=8, fig.align='center'}
 
-tabela_microdados_vinculos %>% 
-  mutate(faixa_etaria = case_when(
-                            faixa_etaria == 1 ~ "10 a 14 anos",
-                            faixa_etaria == 2 ~ "15 a 17 anos",
-                            faixa_etaria == 3 ~ "18 a 24 anos",
-                            faixa_etaria == 4 ~ "25 a 29 anos",
-                            faixa_etaria == 5 ~ "30 a 39 anos",
-                            faixa_etaria == 6 ~ "40 a 49 anos",
-                            faixa_etaria == 7 ~ "50 a 64 anos",
-                            faixa_etaria == 8 ~ "65 anos ou mais")) %>% 
-  ggplot(aes(x=idade, y = valor_remuneracao_media)) +
-  geom_point(aes(color = faixa_etaria)) +
-  labs( x = "\nIdade (anos)\n", y = "\nSalário médio R$\n", title =  "Salário médio de um cientista de dados por idade", colour = "Faixa etária")
+media_idade %>% 
+  ggplot(aes(x=faixa_etaria, y = media)) +
+  geom_col(aes(fill = faixa_etaria)) +
+  geom_text(aes(x = faixa_etaria, y = media*0.85, label = media ))+
+  labs( x = "\nIdade (anos)\n", y = "\nSalário médio R$\n", title =  "Salário médio de um cientista de dados por faixa etária")
 
 
 ```
-
