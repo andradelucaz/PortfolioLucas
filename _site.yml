@@ -3,7 +3,7 @@ title: "Portfolio Lucas"
 description: |
   Portfolio Lucas
 output_dir: "docs"
-theme: tema1.css
+theme: tema2.css
 navbar:
   right:
     - text: "Home"
@@ -12,5 +12,4 @@ navbar:
       href: about.html
 output:
   distill::distill_article
-  css: styles.css
 
