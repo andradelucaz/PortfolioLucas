@@ -3,6 +3,7 @@ title: "Portfolio Lucas"
 description: |
   Portfolio Lucas
 output_dir: "docs"
+theme: tema1.css
 navbar:
   right:
     - text: "Home"
