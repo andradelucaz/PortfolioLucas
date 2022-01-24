@@ -1,0 +1,49 @@
+---
+title: "Portfolio Lucas"
+output: bookdown::gitbook
+site: bookdown::bookdown_site
+listing: posts
+---
+
+<!--chapter:end:index.Rmd-->
+---
+title: "Projects"
+description: |
+  Projetos
+output: html_document  
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+<!--chapter:end:projects.Rmd-->
+---
+title: "About this blog"
+description: |
+  Some additional details about the blog
+output: html_document  
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+<!--chapter:end:about.Rmd-->
+
+---
+title: "CV"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Lucas Silva Andrade
+
+
+
+
+<!--chapter:end:CV.Rmd-->
+

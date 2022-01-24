@@ -1,0 +1,16 @@
+---
+title: "CV"
+output: 
+  html_document:
+    theme: cosmo
+    css: styles.css
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Lucas Silva Andrade
+
+
+
